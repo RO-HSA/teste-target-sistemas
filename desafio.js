@@ -36,7 +36,36 @@ const fibonacci = (num = 21) => {
 // a) Usar o json ou xml disponível como fonte dos dados do faturamento mensal;
 // b) Podem existir dias sem faturamento, como nos finais de semana e feriados. Estes dias devem ser ignorados no cálculo da média;
 
-// Resposta: Os dados não foram disponibilizados.
+const faturamentoDiario = async () => {
+  const dados = require("./dados.json");
+
+  const soma = dados.reduce((a, b) => a + b.valor, 0);
+  const diasComFaturamento = dados.filter((dia) => dia.valor > 0);
+  const valoresComFaturamentoOrdernados = diasComFaturamento.sort(
+    (a, b) => a.valor - b.valor
+  );
+
+  const menorValor = valoresComFaturamentoOrdernados[0];
+
+  const maiorValor =
+    valoresComFaturamentoOrdernados[valoresComFaturamentoOrdernados.length - 1];
+
+  const media = soma / diasComFaturamento.length;
+
+  let QntDiasAcimaDaMedia = 0;
+
+  for (let i = 0; i < diasComFaturamento.length; i++) {
+    if (diasComFaturamento[i].valor > media) {
+      QntDiasAcimaDaMedia++;
+    }
+  }
+
+  return {
+    menorValor: menorValor.valor,
+    maiorValor: maiorValor.valor,
+    QntDiasAcimaDaMedia,
+  };
+};
 
 // 4) Dado o valor de faturamento mensal de uma distribuidora, detalhado por estado:
 // • SP – R$67.836,43
@@ -88,5 +117,3 @@ const inverterString = (text = "targetsistemas") => {
 
   return stringInvertida;
 };
-
-console.log(inverterString());
